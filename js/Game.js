@@ -6,7 +6,7 @@ var Game = function() {
 	var KEY_RIGHT = 39;
 	var EMPTY = 0;
 
-	var board = [[4, 2, 4, 0], [4, 2, 4, 16], [4, 2, 2, 0], [0, 4, 0, 0]];
+	var board = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
 
 	this.initializeBoard = function() {
 		for ( i = 0; i < 4; i++) {
@@ -24,6 +24,17 @@ var Game = function() {
 		}
 		this.redrawScreenFromArray();
 	};
+	
+	this.generateRandomTile = function(){
+		while(true){
+			var x = Math.floor(Math.random() * 10) % 4;
+			var y = Math.floor(Math.random() * 10) % 4;
+			if(board[x][y] === 0){
+				board[x][y] = 2;
+				break;
+			}
+		}
+	};
 
 	this.setTileValue = function($tile, value) {
 		$tile.css('background-color', '#EFEFEF');
@@ -35,6 +46,10 @@ var Game = function() {
 		$tile.css('border', '0px');
 		$tile.css('background-color', '#FFFFFF');
 		$tile.html('');
+	};
+	
+	this.checkGameOver = function() {
+		// TO be continued ;)
 	};
 
 	this.setEventListeners = function() {
@@ -49,6 +64,8 @@ var Game = function() {
 			} else if (event.keyCode === KEY_DOWN) {
 				self.downEvent();
 			}
+			self.generateRandomTile();
+			self.redrawScreenFromArray();
 		});
 	};
 
