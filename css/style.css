@@ -19,6 +19,8 @@ table, th, td {
 td {
 	width: 100px;
 	height: 100px;
+	font-weight:bold;
+	font-family:sans-serif;
 }
 
 
@@ -50,4 +52,12 @@ td {
 	line-height:115px;
 	text-align:center;
 	display:inline-block;
+}
+
+#separator-border {
+border:2px dotted #FF0000;
+}
+
+#score {
+border: 2px dotted #FF0000;
 }
