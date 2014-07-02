@@ -58,6 +58,7 @@ var Game = function() {
 			for(j=0;j<4;j++){
 				if(board[i][j] === EMPTY || board[i][j] === undefined || isNaN(board[i][j])){
 					this.setTileEmpty(this.getTileObject(i,j));
+					board[i][j] = 0;
 				} else {
 					console.log('Got Value ' + board[i][j]);
 					this.setTileValue(this.getTileObject(i,j),board[i][j]);
