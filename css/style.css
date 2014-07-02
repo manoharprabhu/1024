@@ -1,0 +1,52 @@
+.game-container {
+	position:absolute;
+	width:500px;
+	height:500px;
+	border:1px solid #CDCDCD;
+	top:50%;
+	left:50%;
+	margin-left: -251px;
+	margin-top: -251px;
+	
+}
+
+table, th, td {
+	border:1px solid #CDCDCD;
+	text-align: center;
+}
+
+td {
+	width: 100px;
+	height: 100px;
+}
+
+
+
+.row {
+	position:relative;
+	width:100%;
+	height:125px;
+}
+
+.filled-tile {
+	background-color:#EFEFEF;
+	margin-left:3px;
+	margin-top:4px;
+	width:117px;
+	height:117px;
+	border:1px solid #CDCDCD;
+	line-height:115px;
+	text-align:center;
+	display:inline-block;
+}
+
+.empty-tile {
+	background-color: #006DCC;
+	margin-left:3px;
+	margin-top:4px;
+	width:117px;
+	height:117px;
+	line-height:115px;
+	text-align:center;
+	display:inline-block;
+}
