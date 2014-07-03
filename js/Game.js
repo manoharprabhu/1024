@@ -7,24 +7,24 @@ var Game = function() {
 	var EMPTY = 0;
 
 	var board = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
-	
+
 	var colorPairs = {
-		'2':'#FF2222',
-		'4':'#22FF22',
-		'8':'#2222FF',
-		'16':'#12FFCC',
-		'32':'#DDEE11',
-		'64':'#22EE55',
-		'128':'#45EFFF',
-		'256':'#DE3245',
-		'512':'#346544',
-		'1024':'#889876',
-		'2048':'#679316',
-		'4096':'#233333',
-		'8192':'#442235',
-		'16384':'#000000'	
+		'2' : '#FF2222',
+		'4' : '#22FF22',
+		'8' : '#2222FF',
+		'16' : '#12FFCC',
+		'32' : '#DDEE11',
+		'64' : '#22EE55',
+		'128' : '#45EFFF',
+		'256' : '#DE3245',
+		'512' : '#346544',
+		'1024' : '#889876',
+		'2048' : '#679316',
+		'4096' : '#233333',
+		'8192' : '#442235',
+		'16384' : '#000000'
 	};
-	
+
 	var points = 0;
 
 	this.initializeBoard = function() {
@@ -43,40 +43,40 @@ var Game = function() {
 		}
 		this.redrawScreenFromArray();
 	};
-	
-	this.generateRandomTile = function(){
-	if(this.isBoardFull())
-		return;
-		
-		while(true){
+
+	this.generateRandomTile = function() {
+		if (this.isBoardFull())
+			return;
+
+		while (true) {
 			var x = Math.floor(Math.random() * 10) % 4;
 			var y = Math.floor(Math.random() * 10) % 4;
-			if(board[x][y] === 0){
-				board[x][y] = 2;
+			if (board[x][y] === 0) {
+				board[x][y] = Math.pow(2, (Math.floor(Math.random() * 10) % 2) + 1);
 				break;
 			}
 		}
 	};
-	
-	this.isBoardFull =  function(){
-	for(i=0;i<4;i++){
-		for(j=0;j<4;j++){
-		if(board[i][j] === 0)
-			return false;
+
+	this.isBoardFull = function() {
+		for ( i = 0; i < 4; i++) {
+			for ( j = 0; j < 4; j++) {
+				if (board[i][j] === 0)
+					return false;
+			}
 		}
-	}
-	return true;
-	}
+		return true;
+	};
 
 	this.setTileValue = function($tile, value) {
 		$tile.css('background-color', colorPairs[value]);
 		$tile.css('border', '1px');
-		if(parseInt(value) < 16){
-			$tile.css('font-size','18pt');
-		} else if(parseInt(value) < 128){
-			$tile.css('font-size','24pt');
+		if (parseInt(value) < 16) {
+			$tile.css('font-size', '18pt');
+		} else if (parseInt(value) < 128) {
+			$tile.css('font-size', '24pt');
 		} else {
-			$tile.css('font-size','32pt');
+			$tile.css('font-size', '32pt');
 		}
 		$tile.html(value);
 	};
@@ -86,7 +86,7 @@ var Game = function() {
 		$tile.css('background-color', '#FFFFFF');
 		$tile.html('');
 	};
-	
+
 	this.setEventListeners = function() {
 		var self = this;
 		$(document).keydown(function(event) {
@@ -99,15 +99,19 @@ var Game = function() {
 			} else if (event.keyCode === KEY_DOWN) {
 				self.downEvent();
 			}
-			if(self.isGameOver()) {
-				alert("Game over");
+			if (self.isGameOver()) {
+				$('#game-over-popup').css('display','block');
 				$(document).unbind();
 			} else {
 				self.generateRandomTile();
 			}
 			self.redrawScreenFromArray();
-			
+
 		});
+		
+		$('#dismiss-gameover-popup-button').click(function(event){
+			$('#game-over-popup').css('display','none');
+		});;
 	};
 
 	this.redrawScreenFromArray = function() {
@@ -129,35 +133,35 @@ var Game = function() {
 	this.getTileObject = function(i, j) {
 		return $('#' + i + '-' + j);
 	};
-	
-	this.isGameOver = function(){
-	var flag = true;
-		for(i=0;i<4;i++){
-			for(j=0;j<4;j++){
-				if(board[i][j] === 0){
+
+	this.isGameOver = function() {
+		var flag = true;
+		for ( i = 0; i < 4; i++) {
+			for ( j = 0; j < 4; j++) {
+				if (board[i][j] === 0) {
 					flag = false;
 					break;
 				}
-				if( (i<3) && board[i][j] === board[i+1][j]) {
+				if ((i < 3) && board[i][j] === board[i+1][j]) {
 					flag = false;
 					break;
 				}
-				if((i>0) && board[i][j] === board[i-1][j]) {
+				if ((i > 0) && board[i][j] === board[i-1][j]) {
 					flag = false;
 					break;
 				}
-				if( (j<3) && board[i][j] === board[i][j+1]) {
-					flag = false;				
+				if ((j < 3) && board[i][j] === board[i][j + 1]) {
+					flag = false;
 					break;
 				}
-				if( (j>0) && board[i][j] === board[i][j-1]) {
-					flag = false;				
+				if ((j > 0) && board[i][j] === board[i][j - 1]) {
+					flag = false;
 					break;
 				}
 			}
 		}
 		return flag;
-	}
+	};
 
 	this.upEvent = function() {
 		for ( col = 0; col < 4; col++) {
@@ -171,7 +175,7 @@ var Game = function() {
 			}
 			for ( i = 0; i < tempArray.length - 1; i++) {
 				if (tempArray[i] === tempArray[i + 1]) {
-					tempArray[i] = 2*tempArray[i];
+					tempArray[i] = 2 * tempArray[i];
 					points = points + tempArray[i];
 					tempArray[i + 1] = 0;
 				}
@@ -196,7 +200,7 @@ var Game = function() {
 		}
 		console.log(board);
 		this.redrawScreenFromArray();
-		
+
 	};
 
 	this.downEvent = function() {
@@ -211,7 +215,7 @@ var Game = function() {
 			}
 			for ( i = 0; i < tempArray.length - 1; i++) {
 				if (tempArray[i] === tempArray[i + 1]) {
-					tempArray[i] = 2*tempArray[i];
+					tempArray[i] = 2 * tempArray[i];
 					points = points + tempArray[i];
 					tempArray[i + 1] = 0;
 				}
@@ -250,7 +254,7 @@ var Game = function() {
 			}
 			for ( i = 0; i < tempArray.length - 1; i++) {
 				if (tempArray[i] === tempArray[i + 1]) {
-					tempArray[i] = 2*tempArray[i];
+					tempArray[i] = 2 * tempArray[i];
 					points = points + tempArray[i];
 					tempArray[i + 1] = 0;
 				}
@@ -290,7 +294,7 @@ var Game = function() {
 			}
 			for ( i = 0; i < tempArray.length - 1; i++) {
 				if (tempArray[i] === tempArray[i + 1]) {
-					tempArray[i] = 2*tempArray[i];
+					tempArray[i] = 2 * tempArray[i];
 					points = points + tempArray[i];
 					tempArray[i + 1] = 0;
 				}
