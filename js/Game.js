@@ -5,6 +5,7 @@ var Game = function() {
 	var KEY_LEFT = 37;
 	var KEY_RIGHT = 39;
 	var EMPTY = 0;
+	var WINNING_SCORE = 1024;
 
 	var board = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
 
@@ -45,8 +46,7 @@ var Game = function() {
 	};
 
 	this.generateRandomTile = function() {
-		if (this.isBoardFull())
-			return;
+		
 
 		while (true) {
 			var x = Math.floor(Math.random() * 10) % 4;
@@ -69,6 +69,7 @@ var Game = function() {
 	};
 
 	this.setTileValue = function($tile, value) {
+
 		$tile.css('background-color', colorPairs[value]);
 		$tile.css('border', '1px');
 		if (parseInt(value) < 16) {
@@ -90,6 +91,11 @@ var Game = function() {
 	this.setEventListeners = function() {
 		var self = this;
 		$(document).keydown(function(event) {
+			var genFlag = false;
+			if(self.shouldGenerateRandomBlock(event.keyCode)){
+				genFlag = true;
+			}
+			
 			if (event.keyCode === KEY_LEFT) {
 				self.leftEvent();
 			} else if (event.keyCode === KEY_UP) {
@@ -99,19 +105,86 @@ var Game = function() {
 			} else if (event.keyCode === KEY_DOWN) {
 				self.downEvent();
 			}
+
 			if (self.isGameOver()) {
-				$('#game-over-popup').css('display','block');
-				$(document).unbind();
-			} else {
+				self.displayGameOver();
+			} 
+			
+			if(self.didWinGame()) {
+				self.displayGameWin();
+			}
+			
+			if(genFlag) {
 				self.generateRandomTile();
 			}
+			
 			self.redrawScreenFromArray();
 
 		});
+
+		$('#dismiss-gameover-popup-button').click(function(event) {
+			$('#game-over-popup').css('display', 'none');
+		});
+		;
+	};
+	
+	this.shouldGenerateRandomBlock = function(direction){
 		
-		$('#dismiss-gameover-popup-button').click(function(event){
-			$('#game-over-popup').css('display','none');
-		});;
+		if(this.isBoardFull())
+			return false;
+					
+		if(direction === KEY_UP){
+			for(i=0;i<4;i++){
+				for(j=0;j<3;j++){
+					if(board[j][i] === 0 && board[j+1][i] === 0)
+						continue;
+					if(board[j][i] === 0 && board[j+1][i] !== 0)
+						return true;
+				}
+			}
+		} else if(direction === KEY_DOWN){
+			for(i=0;i<4;i++){
+				for(j=3;j>0;j--){
+					if(board[j][i] === 0 && board[j-1][i] === 0)
+					continue;
+					if(board[j][i] === 0 && board[j-1][i] !== 0)
+						return true;
+				}
+			}
+		} else if(direction === KEY_LEFT) {
+			for(i=0;i<4;i++){
+				for(j=0;j<3;j++){
+					if(board[i][j] === 0 && board[i][j+1] === 0)
+					continue;
+					
+					if(board[i][j] === 0 && board[i][j+1] !== 0)
+						return true;
+				}
+			}
+		} else if(direction === KEY_RIGHT){
+			for(i=0;i<4;i++){
+				for(j=3;j>0;j--){
+					if(board[i][j] === 0 && board[i][j-1] === 0)
+					continue;
+					
+					if(board[i][j] === 0 && board[i][j-1] !== 0)
+						return true;
+				}
+			}
+		}
+		return false;
+	};
+
+	this.displayGameOver = function() {
+		$('.game-over-text').html('Game Over');
+		$('#game-over-popup').css('display', 'block');
+		$(document).unbind();
+	};
+
+	this.displayGameWin = function() {
+		$('.game-over-text').html('You Win');
+		$('#game-over-popup').css('display', 'block');
+		$(document).unbind();
 	};
 
 	this.redrawScreenFromArray = function() {
@@ -163,6 +236,43 @@ var Game = function() {
 		return flag;
 	};
 
+	this.didWinGame = function() {
+		for ( i = 0; i < 4; i++) {
+			for ( j = 0; j < 4; j++) {
+				if (board[i][j] === WINNING_SCORE) {
+					return true;
+				}
+			}
+		}
+		return false;
+	};
+
+	this.shiftArrayElementsToLeft = function(tempArray) {
+		var pointer = 0;
+		for ( i = 0; i < tempArray.length; i++) {
+			if (tempArray[i] != 0) {
+				tempArray[pointer] = tempArray[i];
+				pointer++;
+			}
+		}
+		while (pointer < tempArray.length) {
+			tempArray[pointer] = 0;
+			pointer++;
+		}
+		return tempArray;
+	};
+
+	this.mergeNonZeroRepeatedElements = function(tempArray) {
+		for ( i = 0; i < tempArray.length - 1; i++) {
+			if (tempArray[i] === tempArray[i + 1]) {
+				tempArray[i] = 2 * tempArray[i];
+				points = points + tempArray[i];
+				tempArray[i + 1] = 0;
+			}
+		}
+		return tempArray;
+	};
+
 	this.upEvent = function() {
 		for ( col = 0; col < 4; col++) {
 			var tempArray = [];
@@ -173,32 +283,16 @@ var Game = function() {
 					tempArray.push(board[row][col]);
 				}
 			}
-			for ( i = 0; i < tempArray.length - 1; i++) {
-				if (tempArray[i] === tempArray[i + 1]) {
-					tempArray[i] = 2 * tempArray[i];
-					points = points + tempArray[i];
-					tempArray[i + 1] = 0;
-				}
-			}
 
-			var pointer = 0;
-			for ( i = 0; i < tempArray.length; i++) {
-				if (tempArray[i] != 0) {
-					tempArray[pointer] = tempArray[i];
-					pointer++;
-				}
-			}
-			while (pointer < tempArray.length) {
-				tempArray[pointer] = 0;
-				pointer++;
-			}
+			tempArray = this.mergeNonZeroRepeatedElements(tempArray);
+			tempArray = this.shiftArrayElementsToLeft(tempArray);
 
 			for ( i = 0; i < 4; i++) {
 				board[i][col] = tempArray[i];
 			}
 
 		}
-		console.log(board);
+		//console.log(board);
 		this.redrawScreenFromArray();
 
 	};
@@ -213,32 +307,16 @@ var Game = function() {
 					tempArray.push(board[row][col]);
 				}
 			}
-			for ( i = 0; i < tempArray.length - 1; i++) {
-				if (tempArray[i] === tempArray[i + 1]) {
-					tempArray[i] = 2 * tempArray[i];
-					points = points + tempArray[i];
-					tempArray[i + 1] = 0;
-				}
-			}
 
-			var pointer = 0;
-			for ( i = 0; i < tempArray.length; i++) {
-				if (tempArray[i] != 0) {
-					tempArray[pointer] = tempArray[i];
-					pointer++;
-				}
-			}
-			while (pointer < tempArray.length) {
-				tempArray[pointer] = 0;
-				pointer++;
-			}
+			tempArray = this.mergeNonZeroRepeatedElements(tempArray);
+			tempArray = this.shiftArrayElementsToLeft(tempArray);
 
 			for ( i = 3; i >= 0; i--) {
 				board[i][col] = tempArray[3 - i];
 			}
 
 		}
-		console.log(board);
+		//console.log(board);
 		this.redrawScreenFromArray();
 	};
 
@@ -252,32 +330,16 @@ var Game = function() {
 					tempArray.push(board[row][col]);
 				}
 			}
-			for ( i = 0; i < tempArray.length - 1; i++) {
-				if (tempArray[i] === tempArray[i + 1]) {
-					tempArray[i] = 2 * tempArray[i];
-					points = points + tempArray[i];
-					tempArray[i + 1] = 0;
-				}
-			}
 
-			var pointer = 0;
-			for ( i = 0; i < tempArray.length; i++) {
-				if (tempArray[i] != 0) {
-					tempArray[pointer] = tempArray[i];
-					pointer++;
-				}
-			}
-			while (pointer < tempArray.length) {
-				tempArray[pointer] = 0;
-				pointer++;
-			}
+			tempArray = this.mergeNonZeroRepeatedElements(tempArray);
+			tempArray = this.shiftArrayElementsToLeft(tempArray);
 
 			for ( i = 0; i < 4; i++) {
 				board[row][i] = tempArray[i];
 			}
 
 		}
-		console.log(board);
+		//console.log(board);
 		this.redrawScreenFromArray();
 
 	};
@@ -292,32 +354,16 @@ var Game = function() {
 					tempArray.push(board[row][col]);
 				}
 			}
-			for ( i = 0; i < tempArray.length - 1; i++) {
-				if (tempArray[i] === tempArray[i + 1]) {
-					tempArray[i] = 2 * tempArray[i];
-					points = points + tempArray[i];
-					tempArray[i + 1] = 0;
-				}
-			}
 
-			var pointer = 0;
-			for ( i = 0; i < tempArray.length; i++) {
-				if (tempArray[i] != 0) {
-					tempArray[pointer] = tempArray[i];
-					pointer++;
-				}
-			}
-			while (pointer < tempArray.length) {
-				tempArray[pointer] = 0;
-				pointer++;
-			}
+			tempArray = this.mergeNonZeroRepeatedElements(tempArray);
+			tempArray = this.shiftArrayElementsToLeft(tempArray);
 
 			for ( i = 3; i >= 0; i--) {
 				board[row][i] = tempArray[3 - i];
 			}
 
 		}
-		console.log(board);
+		//console.log(board);
 		this.redrawScreenFromArray();
 
 	};
