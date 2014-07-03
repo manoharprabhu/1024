@@ -1,4 +1,4 @@
-.game-container {
+/*.game-container {
 	position:absolute;
 	width:500px;
 	height:500px;
@@ -9,7 +9,7 @@
 	margin-top: -251px;
 	
 }
-
+*/
 #game-body {
 	background-color: #232323;
 }
@@ -24,8 +24,8 @@ table, th, td {
 }
 
 td {
-	width: 100px;
-	height: 100px;
+	width: 50px;
+	height: 50px;
 	font-weight:bold;
 	font-family:sans-serif;
 }

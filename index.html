@@ -4,11 +4,13 @@
 		<meta charset="utf-8">
 		<title>1024</title>
 		<meta name="author" content="Manohar Prabhu">
-		<meta name="viewport" content="width=device-width; initial-scale=1.0">
+		<meta name="viewport" content="width=device-width; initial-scale=1.0; target-densitydpi=device-dpi">
 		<link rel="stylesheet" href="css/style.css">
 		<script type="text/javascript" src="js/jquery.js"></script>
 		<script type="text/javascript" src="js/Game.js"></script>
 		<script type="text/javascript" src="js/app.js"></script>
+		<script type="text/javascript" src="js/touchswipe.js"></script>
+		
 	</head>
 	<body id="game-body">
 		<table class="game-container" border="0px" cellspacing="10px">
@@ -36,12 +38,22 @@
 				<td id="3-2"> </td>
 				<td id="3-3"> </td>
 			</tr>
-			<tr>
+			<!--<tr>
 				<td colspan="3" class="white-background">
 					<div id="score">0</div>			
 				</td>
 				<td colspan="1" class="white-background">
 					<div><span  id="highScore">0</span><br /><span style="font-size:6pt;">High Score</span></div>
+				</td>
+			</tr>-->
+		</table>
+		<table>
+			<tr>
+				<td colspan="3" class="white-background">
+					<div id="score">0</div>			
+				</td>
+				<td colspan="1" class="white-background">
+					<div><span  id="highScore">0</span><br /><span style="font-size:12pt;">High Score</span></div>
 				</td>
 			</tr>
 		</table>

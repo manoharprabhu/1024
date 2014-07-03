@@ -35,6 +35,7 @@ var Game = function() {
 			}
 		}
 		this.setHighScoreOnPage();
+		this.setTableDataSize();
 	};
 
 	this.setRandomBoard = function() {
@@ -47,7 +48,7 @@ var Game = function() {
 	};
 
 	this.generateRandomTile = function() {
-		
+
 		while (true) {
 			var x = Math.floor(Math.random() * 10) % 4;
 			var y = Math.floor(Math.random() * 10) % 4;
@@ -67,6 +68,20 @@ var Game = function() {
 		}
 		return true;
 	};
+	
+	this.setTableDataSize = function(){
+		
+		var width = $(window).width();
+		var height = $(window).height();
+			var min = 0;
+			if(width < height)
+				min = width;
+			else
+				min = height;
+				
+		$('td').css('width',(min/4)+10 + 'px');
+		$('td').css('height',(min/4)+10 + 'px');
+	};
 
 	this.setTileValue = function($tile, value) {
 
@@ -74,7 +89,7 @@ var Game = function() {
 		$tile.css('border', '1px');
 		$tile.css('color', '#FFFFFF');
 		$tile.css('text-outline', '2px 2px #ff0000');
-		
+
 		if (parseInt(value) < 16) {
 			$tile.css('font-size', '18pt');
 		} else if (parseInt(value) < 128) {
@@ -91,14 +106,34 @@ var Game = function() {
 		$tile.html('');
 	};
 
+	this.executeAfterEvents = function(genFlag) {
+		if (this.isGameOver()) {
+			this.displayGameOver();
+		}
+
+		if (this.didWinGame()) {
+			this.displayGameWin();
+		}
+
+		if (genFlag) {
+			this.generateRandomTile();
+		}
+
+		this.updateHighScore(points);
+		this.setHighScoreOnPage();
+		this.redrawScreenFromArray();
+
+	};
+
 	this.setEventListeners = function() {
 		var self = this;
+		var genFlag = false;
 		$(document).keydown(function(event) {
-			var genFlag = false;
-			if(self.shouldGenerateRandomBlock(event.keyCode)){
+			genFlag = false;
+			if (self.shouldGenerateRandomBlock(event.keyCode)) {
 				genFlag = true;
 			}
-			
+
 			if (event.keyCode === KEY_LEFT) {
 				self.leftEvent();
 			} else if (event.keyCode === KEY_UP) {
@@ -109,74 +144,95 @@ var Game = function() {
 				self.downEvent();
 			}
 
-			if (self.isGameOver()) {
-				self.displayGameOver();
-			} 
-			
-			if(self.didWinGame()) {
-				self.displayGameWin();
-			}
-			
-			if(genFlag) {
-				self.generateRandomTile();
-			}
-			
-			self.updateHighScore(points);
-			self.setHighScoreOnPage();
-			self.redrawScreenFromArray();
+			self.executeAfterEvents(genFlag);
+		});
 
+		$(document).swipe({
+			//Generic swipe handler for all directions
+			swipe : function(event, direction, distance, duration, fingerCount, fingerData) {
+				genFlag = false;
+				if (direction === "up") {
+					if (self.shouldGenerateRandomBlock(KEY_UP)) {
+						genFlag = true;
+					}
+					self.upEvent();
+				} else if (direction === "down") {
+					if (self.shouldGenerateRandomBlock(KEY_DOWN)) {
+						genFlag = true;
+					}
+					self.downEvent();
+				} else if (direction === "left") {
+					if (self.shouldGenerateRandomBlock(KEY_LEFT)) {
+						genFlag = true;
+					}
+					self.leftEvent();
+				} else if (direction === "right") {
+					if (self.shouldGenerateRandomBlock(KEY_RIGHT)) {
+						genFlag = true;
+					}
+					self.rightEvent();
+				}
+
+				self.executeAfterEvents(genFlag);
+
+			},
+			threshold : 0
 		});
 
 		$('#dismiss-gameover-popup-button').click(function(event) {
 			$('#game-over-popup').css('display', 'none');
 		});
-		;
+		
+		$(window).resize(function(){
+			self.setTableDataSize();
+		});
+
 	};
-	
-	this.setHighScoreOnPage = function(){
+
+	this.setHighScoreOnPage = function() {
 		$('#highScore').html(this.getHighScore());
 	};
-	
-	this.shouldGenerateRandomBlock = function(direction){
-		
-		if(this.isBoardFull())
+
+	this.shouldGenerateRandomBlock = function(direction) {
+
+		if (this.isBoardFull())
 			return false;
-					
-		if(direction === KEY_UP){
-			for(i=0;i<4;i++){
-				for(j=0;j<3;j++){
-					if(board[j][i] === 0 && board[j+1][i] === 0)
+
+		if (direction === KEY_UP) {
+			for ( i = 0; i < 4; i++) {
+				for ( j = 0; j < 3; j++) {
+					if (board[j][i] === 0 && board[j+1][i] === 0)
 						continue;
-					if(board[j][i] === 0 && board[j+1][i] !== 0)
+					if (board[j][i] === 0 && board[j+1][i] !== 0)
 						return true;
 				}
 			}
-		} else if(direction === KEY_DOWN){
-			for(i=0;i<4;i++){
-				for(j=3;j>0;j--){
-					if(board[j][i] === 0 && board[j-1][i] === 0)
-					continue;
-					if(board[j][i] === 0 && board[j-1][i] !== 0)
+		} else if (direction === KEY_DOWN) {
+			for ( i = 0; i < 4; i++) {
+				for ( j = 3; j > 0; j--) {
+					if (board[j][i] === 0 && board[j-1][i] === 0)
+						continue;
+					if (board[j][i] === 0 && board[j-1][i] !== 0)
 						return true;
 				}
 			}
-		} else if(direction === KEY_LEFT) {
-			for(i=0;i<4;i++){
-				for(j=0;j<3;j++){
-					if(board[i][j] === 0 && board[i][j+1] === 0)
-					continue;
-					
-					if(board[i][j] === 0 && board[i][j+1] !== 0)
+		} else if (direction === KEY_LEFT) {
+			for ( i = 0; i < 4; i++) {
+				for ( j = 0; j < 3; j++) {
+					if (board[i][j] === 0 && board[i][j + 1] === 0)
+						continue;
+
+					if (board[i][j] === 0 && board[i][j + 1] !== 0)
 						return true;
 				}
 			}
-		} else if(direction === KEY_RIGHT){
-			for(i=0;i<4;i++){
-				for(j=3;j>0;j--){
-					if(board[i][j] === 0 && board[i][j-1] === 0)
-					continue;
-					
-					if(board[i][j] === 0 && board[i][j-1] !== 0)
+		} else if (direction === KEY_RIGHT) {
+			for ( i = 0; i < 4; i++) {
+				for ( j = 3; j > 0; j--) {
+					if (board[i][j] === 0 && board[i][j - 1] === 0)
+						continue;
+
+					if (board[i][j] === 0 && board[i][j - 1] !== 0)
 						return true;
 				}
 			}
@@ -211,28 +267,26 @@ var Game = function() {
 		}
 		$('#score').html(points);
 	};
-	
-	
-	this.getHighScore = function(){
+
+	this.getHighScore = function() {
 		var highScore = 0;
-		if(localStorage["HighScore"]){
+		if (localStorage["HighScore"]) {
 			highScore = localStorage["HighScore"];
 		}
 		return highScore;
 	};
-	
-	this.updateHighScore = function(newScore){
+
+	this.updateHighScore = function(newScore) {
 		var highScore = 0;
-		if(localStorage["HighScore"]) {
-			if(newScore > localStorage["HighScore"]) {
+		if (localStorage["HighScore"]) {
+			if (newScore > localStorage["HighScore"]) {
 				localStorage["HighScore"] = newScore;
 			}
 		} else {
 			localStorage["HighScore"] = 0;
 		}
-		
+
 	};
-	
 
 	this.getTileObject = function(i, j) {
 		return $('#' + i + '-' + j);
