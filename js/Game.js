@@ -34,6 +34,7 @@ var Game = function() {
 				this.setTileEmpty(this.getTileObject(i, j));
 			}
 		}
+		this.setHighScoreOnPage();
 	};
 
 	this.setRandomBoard = function() {
@@ -47,7 +48,6 @@ var Game = function() {
 
 	this.generateRandomTile = function() {
 		
-
 		while (true) {
 			var x = Math.floor(Math.random() * 10) % 4;
 			var y = Math.floor(Math.random() * 10) % 4;
@@ -118,6 +118,8 @@ var Game = function() {
 				self.generateRandomTile();
 			}
 			
+			self.updateHighScore(points);
+			self.setHighScoreOnPage();
 			self.redrawScreenFromArray();
 
 		});
@@ -126,6 +128,10 @@ var Game = function() {
 			$('#game-over-popup').css('display', 'none');
 		});
 		;
+	};
+	
+	this.setHighScoreOnPage = function(){
+		$('#highScore').html(this.getHighScore());
 	};
 	
 	this.shouldGenerateRandomBlock = function(direction){
@@ -202,6 +208,28 @@ var Game = function() {
 		}
 		$('#score').html(points);
 	};
+	
+	
+	this.getHighScore = function(){
+		var highScore = 0;
+		if(localStorage["HighScore"]){
+			highScore = localStorage["HighScore"];
+		}
+		return highScore;
+	};
+	
+	this.updateHighScore = function(newScore){
+		var highScore = 0;
+		if(localStorage["HighScore"]) {
+			if(newScore > localStorage["HighScore"]) {
+				localStorage["HighScore"] = newScore;
+			}
+		} else {
+			localStorage["HighScore"] = 0;
+		}
+		
+	};
+	
 
 	this.getTileObject = function(i, j) {
 		return $('#' + i + '-' + j);
