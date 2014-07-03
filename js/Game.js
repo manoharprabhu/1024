@@ -72,6 +72,9 @@ var Game = function() {
 
 		$tile.css('background-color', colorPairs[value]);
 		$tile.css('border', '1px');
+		$tile.css('color', '#FFFFFF');
+		$tile.css('text-outline', '2px 2px #ff0000');
+		
 		if (parseInt(value) < 16) {
 			$tile.css('font-size', '18pt');
 		} else if (parseInt(value) < 128) {
