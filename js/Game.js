@@ -7,6 +7,9 @@ var Game = function() {
 	var EMPTY = 0;
 	var WINNING_SCORE = 1024;
 
+	var globalTileSize = 0;
+	var globalFontSize = '18';
+
 	var board = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
 
 	var colorPairs = {
@@ -52,11 +55,19 @@ var Game = function() {
 		while (true) {
 			var x = Math.floor(Math.random() * 10) % 4;
 			var y = Math.floor(Math.random() * 10) % 4;
+			var valPos = {};
 			if (board[x][y] === 0) {
-				board[x][y] = Math.pow(2, (Math.floor(Math.random() * 10) % 2) + 1);
+				//board[x][y] = Math.pow(2, (Math.floor(Math.random() * 10) % 2) + 1);
+				valPos = {
+					'x' : x,
+					'y' : y,
+					'val' : Math.pow(2, (Math.floor(Math.random() * 10) % 2) + 1)
+				};
 				break;
 			}
 		}
+
+		return valPos;
 	};
 
 	this.isBoardFull = function() {
@@ -68,19 +79,24 @@ var Game = function() {
 		}
 		return true;
 	};
-	
-	this.setTableDataSize = function(){
-		
+
+	this.setTableDataSize = function() {
+
 		var width = $(window).width();
 		var height = $(window).height();
-			var min = 0;
-			if(width < height)
-				min = width;
-			else
-				min = height;
-				
-		$('td').css('width',(min/4)-20 + 'px');
-		$('td').css('height',(min/4)-20 + 'px');
+		var min = 0;
+		if (width < height)
+			min = width;
+		else
+			min = height;
+
+		globalTileSize = (min / 6);
+
+		globalFontSize = min/15;
+
+		$('td').css('width', globalTileSize + 'px');
+		$('td').css('height', globalTileSize + 'px');
+
 	};
 
 	this.setTileValue = function($tile, value) {
@@ -89,14 +105,6 @@ var Game = function() {
 		$tile.css('border', '1px');
 		$tile.css('color', '#FFFFFF');
 		$tile.css('text-outline', '2px 2px #ff0000');
-
-		if (parseInt(value) < 16) {
-			$tile.css('font-size', '18pt');
-		} else if (parseInt(value) < 128) {
-			$tile.css('font-size', '24pt');
-		} else {
-			$tile.css('font-size', '32pt');
-		}
 		$tile.html(value);
 	};
 
@@ -116,12 +124,24 @@ var Game = function() {
 		}
 
 		if (genFlag) {
-			this.generateRandomTile();
+			this.makeTileAppear(this.generateRandomTile());
 		}
 
 		this.updateHighScore(points);
 		this.setHighScoreOnPage();
 		this.redrawScreenFromArray();
+
+	};
+
+	this.makeTileAppear = function(valPos) {
+
+		var $tile = this.getTileObject(valPos.x, valPos.y);
+		board[valPos.x][valPos.y] = valPos.val;
+		this.setTileValue($tile, valPos.val);
+		$tile.css('opacity', '0');
+		$tile.animate({
+			opacity : 1
+		}, 400);
 
 	};
 
@@ -182,12 +202,31 @@ var Game = function() {
 		$('#dismiss-gameover-popup-button').click(function(event) {
 			$('#game-over-popup').css('display', 'none');
 		});
-		
-		$(window).resize(function(){
+
+		$(window).resize(function() {
 			self.setTableDataSize();
+			self.setNewFontSizes();
 		});
 
 	};
+
+	this.setNewFontSizes = function() {
+
+		for(i=0;i<4;i++){
+			for(j=0;j<4;j++){
+				var $tile = this.getTileObject(i, j);
+
+		if (parseInt($tile.html()) < 16) {
+			$tile.css('font-size', globalFontSize+5 + 'pt');
+		} else if (parseInt($tile.html()) < 128) {
+			$tile.css('font-size', globalFontSize);
+		} else {
+			$tile.css('font-size', globalFontSize-5 + 'pt');
+		}				
+			}
+		}
+
+	}
 
 	this.setHighScoreOnPage = function() {
 		$('#highScore').html(this.getHighScore());
@@ -197,47 +236,8 @@ var Game = function() {
 
 		if (this.isBoardFull())
 			return false;
-
-		if (direction === KEY_UP) {
-			for ( i = 0; i < 4; i++) {
-				for ( j = 0; j < 3; j++) {
-					if (board[j][i] === 0 && board[j+1][i] === 0)
-						continue;
-					if (board[j][i] === 0 && board[j+1][i] !== 0)
-						return true;
-				}
-			}
-		} else if (direction === KEY_DOWN) {
-			for ( i = 0; i < 4; i++) {
-				for ( j = 3; j > 0; j--) {
-					if (board[j][i] === 0 && board[j-1][i] === 0)
-						continue;
-					if (board[j][i] === 0 && board[j-1][i] !== 0)
-						return true;
-				}
-			}
-		} else if (direction === KEY_LEFT) {
-			for ( i = 0; i < 4; i++) {
-				for ( j = 0; j < 3; j++) {
-					if (board[i][j] === 0 && board[i][j + 1] === 0)
-						continue;
-
-					if (board[i][j] === 0 && board[i][j + 1] !== 0)
-						return true;
-				}
-			}
-		} else if (direction === KEY_RIGHT) {
-			for ( i = 0; i < 4; i++) {
-				for ( j = 3; j > 0; j--) {
-					if (board[i][j] === 0 && board[i][j - 1] === 0)
-						continue;
-
-					if (board[i][j] === 0 && board[i][j - 1] !== 0)
-						return true;
-				}
-			}
-		}
-		return false;
+		else
+			return true;
 	};
 
 	this.displayGameOver = function() {
@@ -266,6 +266,7 @@ var Game = function() {
 			}
 		}
 		$('#score').html(points);
+		this.setNewFontSizes();
 	};
 
 	this.getHighScore = function() {
