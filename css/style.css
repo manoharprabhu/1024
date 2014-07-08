@@ -44,9 +44,8 @@ border:2px dotted #FF0000;
 }
 
 #score {
-	font-size: 28pt;
+	font-size:12pt;
 	text-align: center;
-	line-height: 50px;
 }
 
 .white-background {
@@ -91,4 +90,8 @@ border:2px dotted #FF0000;
 
 #highScore {
 color: #22AA22;
+}
+
+.high-score-text {
+	font-size:6pt !important;
 }

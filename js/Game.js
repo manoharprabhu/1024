@@ -90,7 +90,7 @@ var Game = function() {
 		else
 			min = height;
 
-		globalTileSize = (min / 6);
+		globalTileSize = (min / 7);
 
 		globalFontSize = min/15;
 
