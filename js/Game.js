@@ -39,6 +39,7 @@ var Game = function() {
 		}
 		this.setHighScoreOnPage();
 		this.setTableDataSize();
+		$('table').center();
 	};
 
 	this.setRandomBoard = function() {
@@ -206,6 +207,7 @@ var Game = function() {
 		$(window).resize(function() {
 			self.setTableDataSize();
 			self.setNewFontSizes();
+			$('table').center();
 		});
 
 	};
@@ -226,7 +228,7 @@ var Game = function() {
 			}
 		}
 
-	}
+	};
 
 	this.setHighScoreOnPage = function() {
 		$('#highScore').html(this.getHighScore());
@@ -453,5 +455,14 @@ var Game = function() {
 		this.redrawScreenFromArray();
 
 	};
+	
+	jQuery.fn.center = function () {
+    this.css("position","absolute");
+    this.css("top", Math.max(0, (($(window).height() - $(this).outerHeight()) / 2) + 
+                                                $(window).scrollTop()) + "px");
+    this.css("left", Math.max(0, (($(window).width() - $(this).outerWidth()) / 2) + 
+                                                $(window).scrollLeft()) + "px");
+    return this;
+};
 
 };
