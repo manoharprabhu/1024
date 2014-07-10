@@ -91,9 +91,9 @@ var Game = function() {
 		else
 			min = height;
 
-		globalTileSize = (min / 8);
+		globalTileSize = (min / 12);
 
-		globalFontSize = min/17;
+		globalFontSize = min / 25;
 
 		$('td').css('width', globalTileSize + 'px');
 		$('td').css('height', globalTileSize + 'px');
@@ -105,7 +105,7 @@ var Game = function() {
 		$tile.css('color', colorPairs[value]);
 		$tile.css('border', '2px solid #3333FF');
 		$tile.css('border-radius', '4px');
-		$tile.css('box-shadow', '2px 2px 1px #3333FF');	
+		$tile.css('box-shadow', '2px 2px 1px #3333FF');
 		//$tile.css('color', '#FFFFFF');
 		$tile.css('text-outline', '2px 2px #ff0000');
 		$tile.html(value);
@@ -218,17 +218,17 @@ var Game = function() {
 
 	this.setNewFontSizes = function() {
 
-		for(i=0;i<4;i++){
-			for(j=0;j<4;j++){
+		for ( i = 0; i < 4; i++) {
+			for ( j = 0; j < 4; j++) {
 				var $tile = this.getTileObject(i, j);
 
-		if (parseInt($tile.html()) < 16) {
-			$tile.css('font-size', globalFontSize+5 + 'pt');
-		} else if (parseInt($tile.html()) < 128) {
-			$tile.css('font-size', globalFontSize);
-		} else {
-			$tile.css('font-size', globalFontSize-5 + 'pt');
-		}				
+				if (parseInt($tile.html()) < 16) {
+					$tile.css('font-size', globalFontSize + 5 + 'pt');
+				} else if (parseInt($tile.html()) < 128) {
+					$tile.css('font-size', globalFontSize);
+				} else {
+					$tile.css('font-size', globalFontSize - 5 + 'pt');
+				}
 			}
 		}
 
@@ -459,14 +459,13 @@ var Game = function() {
 		this.redrawScreenFromArray();
 
 	};
-	
-	jQuery.fn.center = function () {
-    this.css("position","absolute");
-    this.css("top", Math.max(0, (($(window).height() - $(this).outerHeight()) / 2) + 
-                                                $(window).scrollTop()) + "px");
-    this.css("left", Math.max(0, (($(window).width() - $(this).outerWidth()) / 2) + 
-                                                $(window).scrollLeft()) + "px");
-    return this;
-};
+
+	//Borrowed code :)
+	jQuery.fn.center = function() {
+		this.css("position", "absolute");
+		this.css("top", Math.max(0, (($(window).height() - $(this).outerHeight()) / 2) + $(window).scrollTop()) + "px");
+		this.css("left", Math.max(0, (($(window).width() - $(this).outerWidth()) / 2) + $(window).scrollLeft()) + "px");
+		return this;
+	};
 
 };
