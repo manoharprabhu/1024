@@ -91,9 +91,9 @@ var Game = function() {
 		else
 			min = height;
 
-		globalTileSize = (min / 7);
+		globalTileSize = (min / 8);
 
-		globalFontSize = min/15;
+		globalFontSize = min/17;
 
 		$('td').css('width', globalTileSize + 'px');
 		$('td').css('height', globalTileSize + 'px');
@@ -102,15 +102,19 @@ var Game = function() {
 
 	this.setTileValue = function($tile, value) {
 
-		$tile.css('background-color', colorPairs[value]);
-		$tile.css('border', '1px');
-		$tile.css('color', '#FFFFFF');
+		$tile.css('color', colorPairs[value]);
+		$tile.css('border', '2px solid #3333FF');
+		$tile.css('border-radius', '4px');
+		$tile.css('box-shadow', '2px 2px 1px #3333FF');	
+		//$tile.css('color', '#FFFFFF');
 		$tile.css('text-outline', '2px 2px #ff0000');
 		$tile.html(value);
 	};
 
 	this.setTileEmpty = function($tile) {
-		$tile.css('border', '0px');
+		$tile.css('border', '2px solid #3333FF');
+		$tile.css('border-radius', '4px');
+		$tile.css('box-shadow', '2px 2px 1px #3333FF');
 		$tile.css('background-color', '#FFFFFF');
 		$tile.html('');
 	};
@@ -142,7 +146,7 @@ var Game = function() {
 		$tile.css('opacity', '0');
 		$tile.animate({
 			opacity : 1
-		}, 400);
+		}, 600);
 
 	};
 
