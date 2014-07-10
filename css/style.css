@@ -47,7 +47,7 @@ border:2px dotted #FF0000;
 }
 
 #score {
-	font-size:21pt;
+	font-size:18pt !important;
 	text-align: center;
 }
 
@@ -94,7 +94,7 @@ border:2px dotted #FF0000;
 
 #highScore {
 color: #22AA22;
-font-size:14pt;
+font-size:10pt;
 }
 
 .high-score-text {
