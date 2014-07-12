@@ -89,9 +89,9 @@ var Game = function() {
 		if (width < height)
 			min = width;
 		else
-			min = height;
+			min = height - 100;
 
-		globalTileSize = (min / 12);
+		globalTileSize = (min / 8);
 
 		globalFontSize = min / 25;
 
@@ -102,12 +102,13 @@ var Game = function() {
 
 	this.setTileValue = function($tile, value) {
 
-		$tile.css('color', colorPairs[value]);
+		$tile.css('background-color', colorPairs[value]);
 		$tile.css('border', '2px solid #3333FF');
 		$tile.css('border-radius', '4px');
 		$tile.css('box-shadow', '2px 2px 1px #3333FF');
 		//$tile.css('color', '#FFFFFF');
 		$tile.css('text-outline', '2px 2px #ff0000');
+		$tile.css('font-weight', 'bold');	
 		$tile.html(value);
 	};
 
