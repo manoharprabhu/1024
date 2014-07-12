@@ -11,7 +11,11 @@
 }
 */
 
-
+html * {
+	-webkit-text-stroke: 1px rgba(0,0,0,0.1);
+	text-shadow: #333 0px 0px 1px; 
+	-webkit-font-smoothing: antialiased;
+}
 
 body {
 	background-color: #CDCDCD;
@@ -22,9 +26,9 @@ table {
 	text-align: center;
 	font-size:38px;
 	border-collapse: separate;
-	border: 4px solid #3333FF;
+	border: 4px solid #9C5C13;
 	border-radius: 8px;
-	box-shadow: 5px 5px 5px #3333FF;
+	box-shadow: 5px 5px 5px #9C5C13;
 	background-color: #FFFFFF;
 }
 
@@ -55,26 +59,27 @@ border:2px dotted #FF0000;
 .white-background {
 	background-color: #FFFFFF;
 	border-radius: 8px;
-	border:1px solid #3333FF;
+	border:1px solid #9C5C13;
 }
 
 #game-over-popup {
-	position: absolute;
+	position:absolute;
+	top:50%;
+	left:50%;
+	margin-left:-150px;
+	margin-top:-75px;
+	z-index:100;
 	width: 300px;
 	height: 150px;
-	border: 1px solid #11CC12;
-	background-color: #33EE23;
-	border-radius: 8px;
-	top: 50%;
-	left: 50%;
-	margin-left: -150px;
-	margin-top: -75px;
+	opacity:0.8;
+	background-color: #000000;
 	display:none;
-	box-shadow: 10px 10px 5px #454545;
 }
 
 #game-over-popup .game-over-text {
 	width: 100%;
+	color:#FFFFFF;
+	font-weight:bold;
 	font-size:28pt;
 	text-align: center;
 	line-height: 75px;
@@ -86,7 +91,17 @@ border:2px dotted #FF0000;
 }
 
 #dismiss-gameover-popup-button {
+	opacity:1 !important;
 	background-color: #EE2323;
+	border: 1px solid #FF0000;
+	padding: 12px;
+	border-radius: 2px;
+	color: #FFFFFF;
+}
+
+#dismiss-gameover-popup-button:hover {
+	opacity:1 !important;
+	background-color: #AA2323;
 	border: 1px solid #FF0000;
 	padding: 12px;
 	border-radius: 2px;

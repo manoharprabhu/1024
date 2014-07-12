@@ -93,7 +93,7 @@ var Game = function() {
 
 		globalTileSize = (min / 8);
 
-		globalFontSize = min / 25;
+		globalFontSize = min / 18;
 
 		$('td').css('width', globalTileSize + 'px');
 		$('td').css('height', globalTileSize + 'px');
@@ -103,9 +103,9 @@ var Game = function() {
 	this.setTileValue = function($tile, value) {
 
 		$tile.css('background-color', colorPairs[value]);
-		$tile.css('border', '2px solid #3333FF');
+		$tile.css('border', '2px solid #9C5C13');
 		$tile.css('border-radius', '4px');
-		$tile.css('box-shadow', '2px 2px 1px #3333FF');
+		$tile.css('box-shadow', '2px 2px 1px #9C5C13');
 		//$tile.css('color', '#FFFFFF');
 		$tile.css('text-outline', '2px 2px #ff0000');
 		$tile.css('font-weight', 'bold');	
@@ -113,9 +113,9 @@ var Game = function() {
 	};
 
 	this.setTileEmpty = function($tile) {
-		$tile.css('border', '2px solid #3333FF');
+		$tile.css('border', '2px solid #9C5C13');
 		$tile.css('border-radius', '4px');
-		$tile.css('box-shadow', '2px 2px 1px #3333FF');
+		$tile.css('box-shadow', '2px 2px 1px #9C5C13');
 		$tile.css('background-color', '#FFFFFF');
 		$tile.html('');
 	};
