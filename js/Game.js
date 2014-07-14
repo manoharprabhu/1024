@@ -31,6 +31,11 @@ var Game = function() {
 	};
 
 	var points = 0;
+	
+	this.resetGame = function(){
+		location.reload();
+	};
+
 
 	this.initializeBoard = function() {
 		for ( i = 0; i < BOARD_SIZE; i++) {
@@ -214,6 +219,10 @@ var Game = function() {
 			self.setTableDataSize();
 			self.setNewFontSizes();
 			$('table').center();
+		});
+		
+		$('#restart-game').bind('click touchend',function(){
+			self.resetGame();
 		});
 
 	};
